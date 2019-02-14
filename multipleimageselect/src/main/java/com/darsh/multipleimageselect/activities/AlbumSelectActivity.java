@@ -6,16 +6,20 @@ import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -52,10 +56,17 @@ public class AlbumSelectActivity extends HelperActivity {
     private final String[] projection = new String[]{
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
-            MediaStore.Images.Media.DATA };
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.SIZE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.new_theme_status_bar));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album_select);
         setView(findViewById(R.id.layout_album_select));
@@ -263,7 +274,8 @@ public class AlbumSelectActivity extends HelperActivity {
                     long albumId = cursor.getLong(cursor.getColumnIndex(projection[0]));
                     String album = cursor.getString(cursor.getColumnIndex(projection[1]));
                     String image = cursor.getString(cursor.getColumnIndex(projection[2]));
-
+                    String size=cursor.getString(cursor.getColumnIndex(projection[3]));
+                    Log.e("AlbumSelect","count "+albumSet.size());
                     if (!albumSet.contains(albumId)) {
                         /*
                         It may happen that some image file paths are still present in cache,
@@ -273,7 +285,7 @@ public class AlbumSelectActivity extends HelperActivity {
                          */
                         file = new File(image);
                         if (file.exists()) {
-                            temp.add(new Album(album, image));
+                            temp.add(new Album(album, image,size));
                             albumSet.add(albumId);
                         }
                     }

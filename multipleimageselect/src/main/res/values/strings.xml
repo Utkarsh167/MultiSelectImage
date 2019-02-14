@@ -4,7 +4,7 @@
 
     <string name="add">ADD</string>
     <string name="selected">selected</string>
-    <string name="limit_exceeded">Can select a maximum of %d images</string>
+    <string name="limit_exceeded">Can\'t select more than %d images</string>
 
     <string name="error_null_cursor">Oops, something went wrong!</string>
 

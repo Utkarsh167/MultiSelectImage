@@ -30,7 +30,7 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
             viewHolder = new ViewHolder();
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.image_view_album_image);
             viewHolder.textView = (TextView) convertView.findViewById(R.id.text_view_album_name);
-
+            viewHolder.text_view_total_images=(TextView)convertView.findViewById(R.id.text_view_total_images);
             convertView.setTag(viewHolder);
 
         } else {
@@ -41,6 +41,7 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
         viewHolder.imageView.getLayoutParams().height = size;
 
         viewHolder.textView.setText(arrayList.get(position).name);
+        viewHolder.text_view_total_images.setText(arrayList.get(position).size);
         Glide.with(context)
                 .load(arrayList.get(position).cover)
                 .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView);
@@ -51,5 +52,6 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
     private static class ViewHolder {
         public ImageView imageView;
         public TextView textView;
+        public TextView text_view_total_images;
     }
 }

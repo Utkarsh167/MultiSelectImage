@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     app:theme="@style/CustomToolbarTheme"
-    android:background="?attr/colorPrimary">
+    android:background="@color/multiple_image_select_primary">
 </android.support.v7.widget.Toolbar>

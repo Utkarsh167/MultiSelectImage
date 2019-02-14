@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -19,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -68,6 +71,12 @@ public class ImageSelectActivity extends HelperActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.new_theme_status_bar));
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_select);
         setView(findViewById(R.id.layout_image_select));
@@ -296,11 +305,11 @@ public class ImageSelectActivity extends HelperActivity {
             Toast.makeText(
                     getApplicationContext(),
                     String.format(getString(R.string.limit_exceeded), Constants.limit),
-                    Toast.LENGTH_SHORT)
+                    Toast.LENGTH_LONG)
                     .show();
             return;
         }else if (newDate.after(pictureDate)){
-            Toast.makeText(this, "Choose Another Image", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Image is too old", Toast.LENGTH_LONG).show();
             return;
         }
         images.get(position).isSelected = !images.get(position).isSelected;
