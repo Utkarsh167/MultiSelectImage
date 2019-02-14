@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,8 @@ import com.darsh.multipleimageselect.models.Image;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 
 /**
@@ -56,7 +59,12 @@ public class ImageSelectActivity extends HelperActivity {
     private Handler handler;
     private Thread thread;
 
-    private final String[] projection = new String[]{ MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATA };
+    private final String[] projection = new String[]{ MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+            MediaStore.Images.Media.DATE_ADDED,
+            MediaStore.Images.Media.DATE_MODIFIED,
+            MediaStore.Images.Media.DATE_TAKEN};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -271,6 +279,19 @@ public class ImageSelectActivity extends HelperActivity {
     };
 
     private void toggleSelection(int position) {
+
+        Date c = Calendar.getInstance().getTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(c);
+        calendar.add(Calendar.DAY_OF_YEAR, -3);
+        Date newDate = calendar.getTime();
+
+        Long millis = Long.parseLong(images.get(position).dateAdded);
+        Log.e("ImageSelect","Date "+ images.get(position).dateAdded);
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(millis * 1000L);
+        Date pictureDate = cal.getTime();
+
         if (!images.get(position).isSelected && countSelected >= Constants.limit) {
             Toast.makeText(
                     getApplicationContext(),
@@ -278,8 +299,10 @@ public class ImageSelectActivity extends HelperActivity {
                     Toast.LENGTH_SHORT)
                     .show();
             return;
+        }else if (newDate.after(pictureDate)){
+            Toast.makeText(this, "Choose Another Image", Toast.LENGTH_LONG).show();
+            return;
         }
-
         images.get(position).isSelected = !images.get(position).isSelected;
         if (images.get(position).isSelected) {
             countSelected++;
@@ -368,6 +391,9 @@ public class ImageSelectActivity extends HelperActivity {
                     long id = cursor.getLong(cursor.getColumnIndex(projection[0]));
                     String name = cursor.getString(cursor.getColumnIndex(projection[1]));
                     String path = cursor.getString(cursor.getColumnIndex(projection[2]));
+                    String dateAdded=cursor.getString(cursor.getColumnIndex(projection[3]));
+                    String dateModified=cursor.getString(cursor.getColumnIndex(projection[4]));
+                    String dateTaken=cursor.getString(cursor.getColumnIndex(projection[5]));
                     boolean isSelected = selectedImages.contains(id);
                     if (isSelected) {
                         tempCountSelected++;
@@ -375,7 +401,7 @@ public class ImageSelectActivity extends HelperActivity {
 
                     file = new File(path);
                     if (file.exists()) {
-                        temp.add(new Image(id, name, path, isSelected));
+                        temp.add(new Image(id, name, path, isSelected,dateAdded,dateModified,dateTaken));
                     }
 
                 } while (cursor.moveToPrevious());

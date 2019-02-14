@@ -11,12 +11,18 @@ public class Image implements Parcelable {
     public String name;
     public String path;
     public boolean isSelected;
+    public  String dateAdded;
+    public  String dateModified;
+    public  String dateTaken;
 
-    public Image(long id, String name, String path, boolean isSelected) {
+    public Image(long id, String name, String path, boolean isSelected,String dateAdded,String dateModified,String dateTaken) {
         this.id = id;
         this.name = name;
         this.path = path;
         this.isSelected = isSelected;
+        this.dateAdded=dateAdded;
+        this.dateModified=dateModified;
+        this.dateTaken=dateTaken;
     }
 
     @Override
@@ -29,6 +35,10 @@ public class Image implements Parcelable {
         dest.writeLong(id);
         dest.writeString(name);
         dest.writeString(path);
+        dest.writeString(dateAdded);
+        dest.writeString(dateModified);
+        dest.writeString(dateTaken);
+
     }
 
     public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
@@ -47,5 +57,8 @@ public class Image implements Parcelable {
         id = in.readLong();
         name = in.readString();
         path = in.readString();
+        dateAdded=in.readString();
+        dateModified=in.readString();
+        dateTaken=in.readString();
     }
 }
