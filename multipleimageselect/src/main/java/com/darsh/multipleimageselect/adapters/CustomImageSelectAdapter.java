@@ -54,7 +54,7 @@ public class CustomImageSelectAdapter extends CustomGenericAdapter<Image> {
 
         Glide.with(context)
                 .load(arrayList.get(position).path)
-                .placeholder(R.drawable.image_placeholder).into(viewHolder.imageView);
+                .into(viewHolder.imageView);
 
         return convertView;
     }
